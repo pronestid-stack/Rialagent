@@ -23,8 +23,13 @@ export default function Home() {
               <a href="#how-it-works" className="text-sm text-gray-400 hover:text-white transition-colors">Come Funziona</a>
               <a href="#stats" className="text-sm text-gray-400 hover:text-white transition-colors">Dati</a>
               <a href="#pricing" className="text-sm text-gray-400 hover:text-white transition-colors">Prezzi</a>
+              <Link href="/due-diligence" className="text-sm text-gray-400 hover:text-white transition-colors">Due Diligence</Link>
             </div>
             <div className="flex items-center gap-3">
+              <Link href="/due-diligence" className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all hover:bg-white/5"
+                style={{ border: '1px solid rgba(76,139,245,0.4)', color: '#4C8BF5' }}>
+                🔍 DD
+              </Link>
               <Link href="/analyze" className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all hover:opacity-90 hover:scale-105"
                 style={{ background: 'linear-gradient(135deg, #F5A623 0%, #D4891C 100%)', color: '#000' }}>
                 Analizza un Deal
@@ -41,6 +46,7 @@ export default function Home() {
                 <a href="#features" className="text-sm text-gray-400 hover:text-white" onClick={() => setMobileMenuOpen(false)}>Funzionalità</a>
                 <a href="#how-it-works" className="text-sm text-gray-400 hover:text-white" onClick={() => setMobileMenuOpen(false)}>Come Funziona</a>
                 <a href="#pricing" className="text-sm text-gray-400 hover:text-white" onClick={() => setMobileMenuOpen(false)}>Prezzi</a>
+                <Link href="/due-diligence" className="text-sm text-blue-400 hover:text-blue-300" onClick={() => setMobileMenuOpen(false)}>🔍 Due Diligence</Link>
                 <Link href="/analyze" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold w-fit"
                   style={{ background: 'linear-gradient(135deg, #F5A623 0%, #D4891C 100%)', color: '#000' }}>
                   Analizza un Deal
@@ -321,7 +327,7 @@ export default function Home() {
 const features = [
   { icon: '🤖', bg: 'rgba(245,166,35,0.12)', title: 'Analisi AI Istantanea', desc: "Inserisci i dati del deal e ottieni un'analisi professionale completa in meno di 60 secondi." },
   { icon: '📊', bg: 'rgba(76,139,245,0.12)', title: 'Report Excel Professionale', desc: 'Genera modelli finanziari strutturati pronti per presentazioni LP e comitati di investimento.' },
-  { icon: '🌍', bg: 'rgba(34,197,94,0.12)', title: '5.300+ Fonti Dati', desc: 'Copriamo 207 mercati con logiche di valutazione aggiornate e comparabili di mercato reali.' },
+  { icon: '🔍', bg: 'rgba(34,197,94,0.12)', title: 'Due Diligence Italia', desc: '8 aree di verifica (legale, urbanistica, sismica, ambientale, ESG...) con checklist e database ufficiali.' },
   { icon: '📈', bg: 'rgba(124,77,255,0.12)', title: 'Scenari Value-Add', desc: 'Esplora scenari conservativi, moderati e aggressivi con ROI proiettato e piano operativo.' },
 ]
 

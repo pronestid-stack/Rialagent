@@ -99,11 +99,13 @@ export default function AnalyzePage() {
             </div>
             <span className="font-bold text-lg tracking-tight text-white">Rial<span className="text-gradient-gold">Agent</span></span>
           </Link>
-          <div className="flex items-center gap-3">
-            <span className="hidden sm:block text-sm text-gray-400">Analisi Deal Immobiliare</span>
+          <div className="flex items-center gap-4">
+            <Link href="/due-diligence" className="hidden sm:inline-flex items-center gap-1.5 text-sm transition-colors" style={{ color: '#4C8BF5' }}>
+              🔍 Due Diligence
+            </Link>
             <Link href="/" className="text-sm text-gray-400 hover:text-white transition-colors flex items-center gap-1.5">
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 11L5 7l4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-              Torna alla Home
+              Home
             </Link>
           </div>
         </div>
