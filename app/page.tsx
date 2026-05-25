@@ -18,21 +18,16 @@ export default function Home() {
               </div>
               <span className="font-bold text-lg tracking-tight text-white">Rial<span className="text-gradient-gold">Agent</span></span>
             </div>
-            <div className="hidden md:flex items-center gap-8">
-              <a href="#features" className="text-sm text-gray-400 hover:text-white transition-colors">Funzionalità</a>
-              <a href="#how-it-works" className="text-sm text-gray-400 hover:text-white transition-colors">Come Funziona</a>
-              <a href="#stats" className="text-sm text-gray-400 hover:text-white transition-colors">Dati</a>
-              <a href="#pricing" className="text-sm text-gray-400 hover:text-white transition-colors">Prezzi</a>
+            <div className="hidden md:flex items-center gap-6">
               <Link href="/due-diligence" className="text-sm text-gray-400 hover:text-white transition-colors">Due Diligence</Link>
+              <Link href="/analyze" className="text-sm text-gray-400 hover:text-white transition-colors">Deal Analysis</Link>
+              <a href="#features" className="text-sm text-gray-400 hover:text-white transition-colors">Funzionalità</a>
+              <a href="#pricing" className="text-sm text-gray-400 hover:text-white transition-colors">Prezzi</a>
             </div>
             <div className="flex items-center gap-3">
-              <Link href="/due-diligence" className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all hover:bg-white/5"
-                style={{ border: '1px solid rgba(76,139,245,0.4)', color: '#4C8BF5' }}>
-                🔍 DD
-              </Link>
-              <Link href="/analyze" className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all hover:opacity-90 hover:scale-105"
+              <Link href="/agente" className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all hover:opacity-90 hover:scale-105"
                 style={{ background: 'linear-gradient(135deg, #F5A623 0%, #D4891C 100%)', color: '#000' }}>
-                Analizza un Deal
+                🤖 AI Agent
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
               </Link>
               <button className="md:hidden text-gray-400 hover:text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
@@ -47,9 +42,10 @@ export default function Home() {
                 <a href="#how-it-works" className="text-sm text-gray-400 hover:text-white" onClick={() => setMobileMenuOpen(false)}>Come Funziona</a>
                 <a href="#pricing" className="text-sm text-gray-400 hover:text-white" onClick={() => setMobileMenuOpen(false)}>Prezzi</a>
                 <Link href="/due-diligence" className="text-sm text-blue-400 hover:text-blue-300" onClick={() => setMobileMenuOpen(false)}>🔍 Due Diligence</Link>
-                <Link href="/analyze" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold w-fit"
+                <Link href="/analyze" className="text-sm text-gray-400 hover:text-white" onClick={() => setMobileMenuOpen(false)}>📊 Deal Analysis</Link>
+                <Link href="/agente" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold w-fit"
                   style={{ background: 'linear-gradient(135deg, #F5A623 0%, #D4891C 100%)', color: '#000' }}>
-                  Analizza un Deal
+                  🤖 AI Agent
                 </Link>
               </div>
             </div>
@@ -70,18 +66,18 @@ export default function Home() {
                 AI Immobiliare Next-Gen
               </div>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight mb-6">
-                Analizza qualsiasi<br />
-                <span className="text-gradient-gold">deal immobiliare</span><br />
-                in pochi secondi
+                Il tuo agente immobiliare<br />
+                <span className="text-gradient-gold">potenziato dall&apos;AI</span><br />
+                — sempre disponibile
               </h1>
               <p className="text-lg text-gray-400 max-w-xl mb-8 leading-relaxed">
-                Modelli finanziari professionali, analisi di mercato e scenari value-add &mdash;
-                generati dall&apos;AI in un click. Sostituisci settimane di lavoro in Excel con minuti.
+                Valutazione professionale (3 metodi), analisi di mercato, strategia di negoziazione,
+                due diligence e piano d&apos;azione &mdash; in 60 secondi. Quello che costa €2.000+ con un team di professionisti.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-                <Link href="/analyze" className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-base font-bold transition-all hover:opacity-90 hover:scale-105 glow-gold"
+                <Link href="/agente" className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-base font-bold transition-all hover:opacity-90 hover:scale-105 glow-gold"
                   style={{ background: 'linear-gradient(135deg, #F5A623 0%, #D4891C 100%)', color: '#000' }}>
-                  Analizza Gratis
+                  🤖 Consulta l&apos;AI Agent
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M8 3l5 5-5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                 </Link>
                 <a href="#how-it-works" className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-base font-medium transition-all hover:bg-white/5"
@@ -163,9 +159,9 @@ export default function Home() {
             ))}
           </div>
           <div className="mt-10 text-center">
-            <Link href="/analyze" className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-base font-bold transition-all hover:opacity-90 hover:scale-105 glow-gold"
+            <Link href="/agente" className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-base font-bold transition-all hover:opacity-90 hover:scale-105 glow-gold"
               style={{ background: 'linear-gradient(135deg, #F5A623 0%, #D4891C 100%)', color: '#000' }}>
-              Inizia Subito — È Gratis
+              🤖 Inizia Subito — È Gratis
             </Link>
           </div>
         </div>
@@ -250,7 +246,7 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
-                <Link href="/analyze"
+                <Link href="/agente"
                   className={`w-full py-3 rounded-xl font-semibold text-sm text-center transition-all hover:opacity-90`}
                   style={plan.popular
                     ? { background: 'linear-gradient(135deg, #F5A623 0%, #D4891C 100%)', color: '#000' }
@@ -273,9 +269,9 @@ export default function Home() {
                 Pronto a trasformare<br /><span className="text-gradient-gold">il tuo processo di investimento?</span>
               </h2>
               <p className="text-gray-400 mb-8">Unisciti a centinaia di team che usano RialAgent per prendere decisioni più rapide e accurate.</p>
-              <Link href="/analyze" className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-base font-bold transition-all hover:opacity-90 hover:scale-105 glow-gold"
+              <Link href="/agente" className="inline-flex items-center gap-2 px-8 py-4 rounded-xl text-base font-bold transition-all hover:opacity-90 hover:scale-105 glow-gold"
                 style={{ background: 'linear-gradient(135deg, #F5A623 0%, #D4891C 100%)', color: '#000' }}>
-                Analizza il Tuo Primo Deal — Gratis
+                🤖 Consulta l&apos;AI Agent — Gratis
               </Link>
             </div>
           </div>
@@ -325,16 +321,16 @@ export default function Home() {
 }
 
 const features = [
-  { icon: '🤖', bg: 'rgba(245,166,35,0.12)', title: 'Analisi AI Istantanea', desc: "Inserisci i dati del deal e ottieni un'analisi professionale completa in meno di 60 secondi." },
-  { icon: '📊', bg: 'rgba(76,139,245,0.12)', title: 'Report Excel Professionale', desc: 'Genera modelli finanziari strutturati pronti per presentazioni LP e comitati di investimento.' },
-  { icon: '🔍', bg: 'rgba(34,197,94,0.12)', title: 'Due Diligence Italia', desc: '8 aree di verifica (legale, urbanistica, sismica, ambientale, ESG...) con checklist e database ufficiali.' },
-  { icon: '📈', bg: 'rgba(124,77,255,0.12)', title: 'Scenari Value-Add', desc: 'Esplora scenari conservativi, moderati e aggressivi con ROI proiettato e piano operativo.' },
+  { icon: '🤖', bg: 'rgba(245,166,35,0.12)', title: 'AI Agent Immobiliare', desc: 'Valutazione completa (3 metodi), analisi mercato, negoziazione e piano d\'azione. Tutto in 60 secondi.' },
+  { icon: '🔍', bg: 'rgba(76,139,245,0.12)', title: 'Due Diligence Completa', desc: '8 aree di verifica (legale, sismica, ambientale, ESG...) con checklist e link a database ufficiali italiani.' },
+  { icon: '📊', bg: 'rgba(34,197,94,0.12)', title: 'Analisi Deal Investor', desc: 'Cap Rate, NOI, Cash-on-Cash, scenari value-add e proiezioni decennali. Report Excel professionale.' },
+  { icon: '🤝', bg: 'rgba(124,77,255,0.12)', title: 'Strategia di Negoziazione', desc: 'Prezzo di offerta ottimale, margine di trattativa, argomentazioni e tattiche negoziali basate su dati reali.' },
 ]
 
 const steps = [
-  { title: 'Inserisci i dati del deal', desc: 'Compila il form con indirizzo, tipo di proprietà, prezzo, affitti, spese operative e parametri di finanziamento. Bastano 2 minuti.', emoji: '📋' },
-  { title: "L'AI elabora l'analisi completa", desc: 'Il motore AI analizza valutazione, comparabili di mercato, scenari value-add, fattori di rischio e formula una raccomandazione di investimento.', emoji: '⚡' },
-  { title: 'Scarica il report Excel professionale', desc: 'Ottieni un modello finanziario strutturato con tutte le metriche, le proiezioni a 10 anni e gli scenari. Pronto da condividere.', emoji: '📥' },
+  { title: 'Inserisci indirizzo + superficie + prezzo', desc: 'Solo 3 campi obbligatori. Aggiungi dettagli opzionali per un\'analisi ancora più precisa. L\'AI gestisce tutto il resto.', emoji: '📋' },
+  { title: "L'AI Agent elabora il report completo", desc: 'Valutazione con 3 metodologie, analisi di mercato, comparabili, strategia di negoziazione, pre-screening DD e piano d\'azione — tutto in 60 secondi.', emoji: '⚡' },
+  { title: 'Agisci con dati professionali', desc: 'Ricevi raccomandazione ACQUISTA/VENDI/INVESTI con score, costi di transazione stimati e link agli strumenti successivi (DD completa, Excel).', emoji: '🎯' },
 ]
 
 const stats = [
@@ -345,15 +341,15 @@ const stats = [
 ]
 
 const outputs = [
-  { title: 'Sommario Esecutivo', desc: 'Sintesi chiara e concisa del deal per decisori e LP' },
-  { title: 'Metriche Finanziarie Chiave', desc: 'Cap Rate, NOI, Cash-on-Cash, DCR, GRM, rendimento lordo' },
-  { title: 'Analisi di Valutazione', desc: 'Stima del valore corrente e posizionamento di mercato' },
-  { title: 'Comparabili di Mercato', desc: 'Analisi di 3-5 proprietà simili con prezzi al mq e cap rate' },
-  { title: 'Scenari Value-Add', desc: 'Tre scenari (conservativo, moderato, aggressivo) con ROI proiettato' },
-  { title: 'Assessment dei Rischi', desc: '5 fattori di rischio chiave con strategie di mitigazione' },
-  { title: 'Raccomandazione di Investimento', desc: 'Rating ACQUISTA / MANTIENI / PASSA con punteggio e motivazione' },
-  { title: 'Proiezioni a 10 Anni', desc: 'Cash flow dettagliato anno per anno con IRR e equity multiple' },
-  { title: 'Report Excel Scaricabile', desc: 'Modello professionale pronto per presentazioni e due diligence' },
+  { title: 'Valutazione con 3 Metodi', desc: 'Comparativo, reddituale e del costo — con range di confidenza e prezzo al mq' },
+  { title: 'Analisi di Mercato', desc: 'Trend prezzi, velocità di vendita, ratio domanda/offerta e stagionalità' },
+  { title: 'Strategia di Negoziazione', desc: 'Prezzo di offerta ottimale, target accordo, argomentazioni e tattiche' },
+  { title: 'Comparabili Realistici', desc: 'Immobili simili nella stessa zona con rettifiche e prezzi al mq' },
+  { title: 'Analisi Investimento', desc: 'Rendimento lordo/netto, cap rate, canone stimato e proiezione 5 anni' },
+  { title: 'Due Diligence Pre-screening', desc: '6 aree di rischio pre-valutate: legale, urbanistica, ambientale, sismica...' },
+  { title: 'Costi di Transazione', desc: 'Stima precisa di imposte, notarile, perizia e agenzia' },
+  { title: 'Piano d\'Azione Prioritario', desc: '6-8 azioni concrete e numerate con timing e costi stimati' },
+  { title: 'Raccomandazione AI', desc: 'ACQUISTA / VENDI ORA / INVESTI / ASPETTA con score e motivazione' },
 ]
 
 const plans = [
