@@ -1,7 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { NextRequest, NextResponse } from 'next/server'
 
-export const maxDuration = 300
+export const runtime = 'edge'
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -162,8 +162,8 @@ REGOLE:
 - La risposta deve essere JSON puro, senza markdown code blocks`
 
     const message = await client.messages.create({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 4096,
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 2048,
       messages: [{ role: 'user', content: prompt }],
     })
 
