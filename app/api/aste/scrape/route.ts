@@ -24,62 +24,87 @@ const SOURCES: Record<string, { name: string; urls: string[]; casaDasta: AstaLot
     name: 'Cambi',
     casaDasta: 'Cambi',
     urls: [
-      'https://www.cambiaste.com/it/search?q=design&category=furniture',
-      'https://www.cambiaste.com/it/aste?categoria=design',
+      'https://www.cambiaste.com/it/ricerca?q=design',
+      'https://www.cambiaste.com/it/aste',
     ],
   },
   finarte: {
     name: 'Finarte',
     casaDasta: 'Finarte',
     urls: [
-      'https://www.finarte.it/it/search?q=design&tipo=mobili',
-      'https://www.finarte.it/it/catalogo?categoria=design-del-900',
+      'https://www.finarte.it/it/ricerca?q=design+furniture',
+      'https://www.finarte.it/it/aste',
     ],
   },
   incanto: {
     name: 'Incanto',
     casaDasta: 'Incanto',
     urls: [
-      'https://www.incanto.auction/it/search?q=design+furniture',
-      'https://www.incanto.auction/it/categorie/design',
+      'https://www.incanto.auction/it/lotti?q=design',
+      'https://www.incanto.auction/it/aste-in-corso',
     ],
   },
   capitolum: {
     name: 'Capitolum',
     casaDasta: 'Capitolum',
     urls: [
-      'https://www.capitolumaste.com/it/aste?q=design',
-      'https://www.capitolumaste.com/it/catalogo',
+      'https://www.capitolum.it/it/lotti?q=design',
+      'https://www.capitolum.it/it/aste',
     ],
   },
   colasanti: {
     name: 'Colasanti',
     casaDasta: 'Colasanti',
     urls: [
-      'https://www.colasantiaste.com/it/aste?categoria=design',
-      'https://www.colasantiaste.com/it/search?q=design+mobili',
+      'https://www.colasantiaste.com/it/lotti?q=design',
+      'https://www.colasantiaste.com/it/aste',
     ],
   },
 }
 
-async function fetchPage(url: string): Promise<string> {
+const BROWSER_HEADERS = {
+  'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+  'Accept-Language': 'it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7',
+  'Accept-Encoding': 'gzip, deflate, br',
+  'Cache-Control': 'no-cache',
+  'Pragma': 'no-cache',
+  'Sec-Fetch-Dest': 'document',
+  'Sec-Fetch-Mode': 'navigate',
+  'Sec-Fetch-Site': 'none',
+  'Upgrade-Insecure-Requests': '1',
+}
+
+async function fetchDirect(url: string): Promise<string> {
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), 15000)
   try {
-    const res = await fetch(url, {
-      signal: controller.signal,
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml',
-        'Accept-Language': 'it-IT,it;q=0.9,en;q=0.8',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Cache-Control': 'no-cache',
-      },
-    })
+    const res = await fetch(url, { signal: controller.signal, headers: BROWSER_HEADERS })
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
     return await res.text()
   } finally {
     clearTimeout(timeout)
+  }
+}
+
+async function fetchViaProxy(url: string): Promise<string> {
+  const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), 20000)
+  try {
+    const res = await fetch(proxyUrl, { signal: controller.signal })
+    if (!res.ok) throw new Error(`Proxy HTTP ${res.status}`)
+    return await res.text()
+  } finally {
+    clearTimeout(timeout)
+  }
+}
+
+async function fetchPage(url: string): Promise<string> {
+  try {
+    return await fetchDirect(url)
+  } catch {
+    return await fetchViaProxy(url)
   }
 }
 
