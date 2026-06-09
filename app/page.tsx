@@ -21,6 +21,7 @@ export default function Home() {
             <div className="hidden md:flex items-center gap-6">
               <Link href="/due-diligence" className="text-sm text-gray-400 hover:text-white transition-colors">Due Diligence</Link>
               <Link href="/analyze" className="text-sm text-gray-400 hover:text-white transition-colors">Deal Analysis</Link>
+              <Link href="/aste" className="text-sm text-gray-400 hover:text-white transition-colors">Archivio Aste</Link>
               <a href="#features" className="text-sm text-gray-400 hover:text-white transition-colors">Funzionalità</a>
               <a href="#pricing" className="text-sm text-gray-400 hover:text-white transition-colors">Prezzi</a>
             </div>
@@ -43,6 +44,7 @@ export default function Home() {
                 <a href="#pricing" className="text-sm text-gray-400 hover:text-white" onClick={() => setMobileMenuOpen(false)}>Prezzi</a>
                 <Link href="/due-diligence" className="text-sm text-blue-400 hover:text-blue-300" onClick={() => setMobileMenuOpen(false)}>🔍 Due Diligence</Link>
                 <Link href="/analyze" className="text-sm text-gray-400 hover:text-white" onClick={() => setMobileMenuOpen(false)}>📊 Deal Analysis</Link>
+                <Link href="/aste" className="text-sm text-gray-400 hover:text-white" onClick={() => setMobileMenuOpen(false)}>🪑 Archivio Aste</Link>
                 <Link href="/agente" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold w-fit"
                   style={{ background: 'linear-gradient(135deg, #F5A623 0%, #D4891C 100%)', color: '#000' }}>
                   🤖 AI Agent
