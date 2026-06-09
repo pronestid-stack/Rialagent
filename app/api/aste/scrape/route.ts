@@ -6,6 +6,16 @@ export const maxDuration = 60
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
+// Scraping via ScrapingBee (se configurato) o proxy pubblici
+async function fetchWithScrapingBee(url: string): Promise<string> {
+  const apiKey = process.env.SCRAPINGBEE_API_KEY
+  if (!apiKey) throw new Error('no_key')
+  const endpoint = `https://app.scrapingbee.com/api/v1/?api_key=${apiKey}&url=${encodeURIComponent(url)}&render_js=true&premium_proxy=false`
+  const res = await fetch(endpoint, { signal: AbortSignal.timeout(30000) })
+  if (!res.ok) throw new Error(`ScrapingBee HTTP ${res.status}`)
+  return await res.text()
+}
+
 export interface AstaLot {
   titolo: string
   casaDasta: 'Cambi' | 'Finarte' | 'Incanto' | 'Capitolum' | 'Colasanti'
@@ -101,22 +111,30 @@ async function fetchViaProxy(url: string): Promise<string> {
 }
 
 async function fetchPage(url: string): Promise<string> {
+  // 1. ScrapingBee (JS rendering, bypass anti-bot)
+  try {
+    return await fetchWithScrapingBee(url)
+  } catch (e) {
+    if ((e as Error).message !== 'no_key') throw e
+  }
+  // 2. Fetch diretto
   try {
     return await fetchDirect(url)
   } catch {
+    // 3. Proxy pubblico fallback
     return await fetchViaProxy(url)
   }
 }
 
-function truncateHtml(html: string, maxLen = 12000): string {
-  const stripped = html
+function truncateHtml(html: string, maxLen = 14000): string {
+  // Rimuovi script e style ma mantieni i tag HTML (per estrarre src, data-src, href)
+  const cleaned = html
     .replace(/<script[\s\S]*?<\/script>/gi, '')
     .replace(/<style[\s\S]*?<\/style>/gi, '')
     .replace(/<!--[\s\S]*?-->/g, '')
-    .replace(/<[^>]+>/g, ' ')
     .replace(/\s+/g, ' ')
     .trim()
-  return stripped.slice(0, maxLen)
+  return cleaned.slice(0, maxLen)
 }
 
 async function extractLots(
@@ -126,24 +144,25 @@ async function extractLots(
 ): Promise<AstaLot[]> {
   const text = truncateHtml(rawHtml)
 
-  const prompt = `Sei un esperto di aste. Analizza questo testo estratto dalla pagina web della casa d'aste "${casaDasta}" (URL: ${sourceUrl}) e cerca SOLO i lotti di MOBILI DI DESIGN (es. sedie, poltrone, tavoli, lampade, divani, credenze di designer del '900 come Eames, Ponti, Aalto, Magistretti, Zanuso, Castelli, Kartell, Cassina, B&B Italia, Arflex, etc.).
+  const prompt = `Sei un esperto di aste d'arte e design. Analizza questo contenuto estratto dalla pagina web della casa d'aste "${casaDasta}" (URL: ${sourceUrl}) e cerca SOLO i lotti di MOBILI DI DESIGN (sedie, poltrone, tavoli, lampade, divani, credenze di designer del '900: Eames, Ponti, Aalto, Magistretti, Zanuso, Castelli, Kartell, Cassina, B&B Italia, Arflex, Colombo, Sottsass, Mari, Bellini, etc.).
 
-TESTO PAGINA:
+CONTENUTO PAGINA:
 ${text}
 
-Restituisci SOLO un array JSON con i lotti di design trovati. Per ogni lotto:
+Restituisci SOLO un array JSON con i lotti di design trovati. Per ogni lotto estrai tutti i dati disponibili:
 {
-  "titolo": "nome completo del lotto",
-  "numeroLotto": "numero lotto o stringa vuota",
+  "titolo": "nome completo del lotto con autore/designer",
+  "numeroLotto": "numero lotto (es. '42') o stringa vuota",
   "stimaMin": numero intero in euro o null,
   "stimaMax": numero intero in euro o null,
   "dataAsta": "YYYY-MM-DD o null",
-  "descrizione": "descrizione breve del pezzo",
-  "immagine": "URL immagine se presente o stringa vuota",
-  "url": "URL diretto al lotto se trovato, altrimenti '${sourceUrl}'",
+  "descrizione": "descrizione dettagliata: materiali, dimensioni, anno, provenienza",
+  "immagine": "URL ASSOLUTO dell'immagine del lotto — cerca tag <img src=...>, data-src=..., data-lazy=..., srcset=..., og:image, background-image:url(...). Se trovi un URL relativo come /images/lot.jpg combinalo con il dominio base. Se non trovi nulla lascia stringa vuota.",
+  "url": "URL assoluto diretto alla pagina del lotto, altrimenti '${sourceUrl}'",
   "categoria": "Sedie & Poltrone|Tavoli|Illuminazione|Divani|Credenze & Armadi|Design da Collezione|Altro"
 }
 
+IMPORTANTE per le immagini: cerca attentamente qualsiasi URL di immagine associato al lotto nel testo/HTML. Priorità: jpg/png/webp di dimensioni medie o grandi.
 Se non trovi lotti di mobili di design, restituisci [].
 JSON puro, nessun testo prima o dopo.`
 
@@ -166,16 +185,35 @@ JSON puro, nessun testo prima o dopo.`
 
 export async function POST(request: NextRequest) {
   try {
-    const { sources = Object.keys(SOURCES) } = await request.json().catch(() => ({}))
-
-    const selectedSources = (sources as string[]).filter((s) => SOURCES[s])
+    const body = await request.json().catch(() => ({}))
     const results: AstaLot[] = []
     const errors: { source: string; error: string }[] = []
+
+    // Modalità URL manuale
+    if (body.manualUrl) {
+      const sourceKey = body.manualSource || 'cambi'
+      const source = SOURCES[sourceKey] || SOURCES.cambi
+      try {
+        const html = await fetchPage(body.manualUrl)
+        const lots = await extractLots(html, source.casaDasta, body.manualUrl)
+        results.push(...lots)
+        if (lots.length === 0) {
+          errors.push({ source: source.name, error: 'Nessun lotto di design trovato in questa pagina. Prova un URL diverso (es. la pagina del catalogo specifico).' })
+        }
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : 'Errore fetch'
+        errors.push({ source: source.name, error: `Impossibile caricare la pagina: ${msg}` })
+      }
+      return NextResponse.json({ lots: results, errors, total: results.length })
+    }
+
+    // Modalità automatica
+    const sources = body.sources || Object.keys(SOURCES)
+    const selectedSources = (sources as string[]).filter((s: string) => SOURCES[s])
 
     for (const sourceKey of selectedSources) {
       const source = SOURCES[sourceKey]
       let fetched = false
-
       for (const url of source.urls) {
         try {
           const html = await fetchPage(url)
@@ -187,10 +225,7 @@ export async function POST(request: NextRequest) {
           continue
         }
       }
-
-      if (!fetched) {
-        errors.push({ source: source.name, error: 'Impossibile raggiungere il sito' })
-      }
+      if (!fetched) errors.push({ source: source.name, error: 'Impossibile raggiungere il sito' })
     }
 
     return NextResponse.json({ lots: results, errors, total: results.length })
