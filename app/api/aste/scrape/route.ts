@@ -189,6 +189,18 @@ export async function POST(request: NextRequest) {
     const results: AstaLot[] = []
     const errors: { source: string; error: string }[] = []
 
+    // Modalità testo incollato (nessun fetch — testo già in chiaro)
+    if (body.pastedText) {
+      const sourceKey = body.manualSource || 'cambi'
+      const source = SOURCES[sourceKey] || SOURCES.cambi
+      const lots = await extractLots(body.pastedText, source.casaDasta, `https://www.${sourceKey === 'finarte' ? 'finarte.it' : sourceKey === 'incanto' ? 'incanto.auction' : sourceKey + 'aste.com'}`)
+      if (lots.length === 0) {
+        errors.push({ source: source.name, error: 'Nessun lotto di design trovato nel testo. Assicurati di aver copiato la pagina del catalogo con i lotti.' })
+      }
+      results.push(...lots)
+      return NextResponse.json({ lots: results, errors, total: results.length })
+    }
+
     // Modalità URL manuale
     if (body.manualUrl) {
       const sourceKey = body.manualSource || 'cambi'

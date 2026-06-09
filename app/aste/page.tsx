@@ -38,10 +38,11 @@ function formatEuro(n: number | null) {
 }
 
 export default function AstePage() {
-  const [mode, setMode] = useState<'auto' | 'manual'>('manual')
+  const [mode, setMode] = useState<'paste' | 'manual' | 'auto'>('paste')
   const [selected, setSelected] = useState<string[]>(SOURCES.map((s) => s.key))
   const [manualSource, setManualSource] = useState('cambi')
   const [manualUrl, setManualUrl] = useState('')
+  const [pastedText, setPastedText] = useState('')
   const [scraping, setScraping] = useState(false)
   const [saving, setSaving] = useState(false)
   const [lots, setLots] = useState<AstaLot[]>([])
@@ -78,7 +79,9 @@ export default function AstePage() {
     setSelectedLots(new Set())
 
     try {
-      const body = mode === 'manual'
+      const body = mode === 'paste'
+        ? { pastedText: pastedText.trim(), manualSource }
+        : mode === 'manual'
         ? { manualUrl: manualUrl.trim(), manualSource }
         : { sources: selected }
 
@@ -119,7 +122,7 @@ export default function AstePage() {
     }
   }
 
-  const canScrape = mode === 'auto' ? selected.length > 0 : manualUrl.trim().length > 0
+  const canScrape = mode === 'paste' ? pastedText.trim().length > 0 : mode === 'auto' ? selected.length > 0 : manualUrl.trim().length > 0
   const sourceColor = (name: string) => SOURCES.find((s) => s.label === name)?.color || '#888'
 
   return (
@@ -154,10 +157,15 @@ export default function AstePage() {
         </div>
 
         {/* MODE TOGGLE */}
-        <div className="flex gap-2 mb-5">
+        <div className="flex gap-2 mb-5 flex-wrap">
+          <button onClick={() => setMode('paste')}
+            className="px-4 py-2 rounded-xl text-sm font-medium transition-all"
+            style={{ background: mode === 'paste' ? 'rgba(245,166,35,0.15)' : 'rgba(255,255,255,0.03)', border: `1px solid ${mode === 'paste' ? '#F5A623' : '#2A2A3A'}`, color: mode === 'paste' ? '#F5A623' : '#666' }}>
+            📋 Incolla testo
+          </button>
           <button onClick={() => setMode('manual')}
             className="px-4 py-2 rounded-xl text-sm font-medium transition-all"
-            style={{ background: mode === 'manual' ? 'rgba(245,166,35,0.15)' : 'rgba(255,255,255,0.03)', border: `1px solid ${mode === 'manual' ? '#F5A623' : '#2A2A3A'}`, color: mode === 'manual' ? '#F5A623' : '#666' }}>
+            style={{ background: mode === 'manual' ? 'rgba(156,111,228,0.15)' : 'rgba(255,255,255,0.03)', border: `1px solid ${mode === 'manual' ? '#9C6FE4' : '#2A2A3A'}`, color: mode === 'manual' ? '#9C6FE4' : '#666' }}>
             🔗 URL manuale
           </button>
           <button onClick={() => setMode('auto')}
@@ -170,7 +178,41 @@ export default function AstePage() {
         {/* CONTROLS */}
         <div className="rounded-2xl p-6 mb-6" style={{ background: '#0D0D1A', border: '1px solid #1E1E30' }}>
 
-          {mode === 'manual' ? (
+          {mode === 'paste' ? (
+            <div>
+              <p className="text-sm font-medium text-gray-300 mb-1">Casa d&apos;asta</p>
+              <div className="flex gap-2 mb-4 flex-wrap">
+                {SOURCES.map((s) => (
+                  <button key={s.key} onClick={() => setManualSource(s.key)}
+                    className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
+                    style={{ background: manualSource === s.key ? `${s.color}20` : 'rgba(255,255,255,0.03)', border: `1px solid ${manualSource === s.key ? s.color : '#2A2A3A'}`, color: manualSource === s.key ? s.color : '#555' }}>
+                    {s.label}
+                  </button>
+                ))}
+              </div>
+
+              <div className="rounded-xl p-3 mb-4" style={{ background: 'rgba(245,166,35,0.06)', border: '1px solid rgba(245,166,35,0.2)' }}>
+                <p className="text-xs font-medium text-yellow-400 mb-2">Come fare:</p>
+                <ol className="text-xs text-gray-400 space-y-1.5 list-decimal list-inside">
+                  <li>Vai sul sito di <strong className="text-white">{SOURCES.find(s => s.key === manualSource)?.label}</strong> e apri una pagina di catalogo design</li>
+                  <li>Premi <kbd className="px-1.5 py-0.5 rounded text-xs font-mono" style={{ background: '#1E1E30', color: '#aaa' }}>Ctrl+A</kbd> poi <kbd className="px-1.5 py-0.5 rounded text-xs font-mono" style={{ background: '#1E1E30', color: '#aaa' }}>Ctrl+C</kbd> per copiare tutto il testo della pagina</li>
+                  <li>Incolla qui sotto con <kbd className="px-1.5 py-0.5 rounded text-xs font-mono" style={{ background: '#1E1E30', color: '#aaa' }}>Ctrl+V</kbd></li>
+                </ol>
+              </div>
+
+              <textarea
+                value={pastedText}
+                onChange={(e) => setPastedText(e.target.value)}
+                placeholder="Incolla qui il testo della pagina catalogo dell'asta..."
+                rows={8}
+                className="w-full px-4 py-3 rounded-xl text-sm text-white placeholder-gray-600 outline-none resize-none"
+                style={{ background: '#070710', border: '1px solid #2A2A3A' }}
+              />
+              {pastedText.length > 0 && (
+                <p className="text-xs text-gray-600 mt-1">{pastedText.length.toLocaleString('it-IT')} caratteri incollati</p>
+              )}
+            </div>
+          ) : mode === 'manual' ? (
             <div>
               <p className="text-sm font-medium text-gray-300 mb-1">Incolla l&apos;URL del catalogo asta</p>
               <p className="text-xs text-gray-500 mb-4">Vai sul sito della casa d&apos;asta, apri la pagina del catalogo design/arredamento e copia l&apos;URL.</p>
@@ -324,7 +366,7 @@ export default function AstePage() {
           <div className="text-center py-20">
             <div className="text-5xl mb-4">🪑</div>
             <p className="text-gray-600 text-sm">
-              {mode === 'manual' ? 'Incolla l\'URL di un catalogo asta e clicca Avvia Scraping' : 'Seleziona le case d\'asta e avvia lo scraping'}
+              {mode === 'paste' ? 'Copia il testo dalla pagina del catalogo e incollalo sopra' : mode === 'manual' ? 'Incolla l\'URL di un catalogo asta e clicca Avvia Scraping' : 'Seleziona le case d\'asta e avvia lo scraping'}
             </p>
           </div>
         )}
